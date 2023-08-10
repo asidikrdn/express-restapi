@@ -5,7 +5,7 @@ const cors = require("cors");
 // const { redisInit } = require("./service/redis");
 const mstRoleRouter = require("./routes/mstRoleRouter");
 const path = require("path");
-// const loggingMiddleware = require("./middleware/logging");
+const customLogger = require("./middlewares/logger");
 
 // create instance of express
 const app = express();
@@ -16,6 +16,9 @@ const app = express();
 // create logger instance
 const logger = morgan("dev");
 app.use(logger);
+
+// custom logger middleware
+app.use(customLogger);
 
 // cors configuration
 app.use(
