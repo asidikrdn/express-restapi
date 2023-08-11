@@ -1,5 +1,5 @@
-const { bearerAuth } = require("./swagger/components/securityScheme");
-const rolePath = require("./swagger/paths/role");
+const { bearerAuth } = require("./swagger/component/securityScheme");
+const rolePath = require("./swagger/path/role");
 
 const swaggerDefinition = {
   openapi: "3.0.0",
@@ -7,6 +7,15 @@ const swaggerDefinition = {
     title: "Express REST API Boilerplate",
     description: "Documentation for express REST API boilerplate by asidikrdn",
     version: "1.0.0",
+    license: {
+      name: "MIT",
+      url: "https://github.com/asidikrdn/express-restapi-boilerplate/LICENSE",
+    },
+    contact: {
+      name: "Ahmad Sidik Rudini",
+      url: "https://asidikrdn.my.id",
+      email: "sidikrudini16@gmail.com",
+    },
   },
   servers: [
     {
