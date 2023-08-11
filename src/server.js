@@ -1,7 +1,7 @@
 const express = require("express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
-const swaggerDoc = require("../docs/swagger.json");
+const swaggerDoc = require("../docs/swagger");
 const morgan = require("morgan");
 require("dotenv").config(); // read environment variable from .env file
 const cors = require("cors");
@@ -28,22 +28,22 @@ app.use(
 );
 
 // setup swagger jsdoc
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Express REST API",
-      version: "1.0.0",
-    },
-    servers: [
-      {
-        url: "http://localhost:5000/api/v1",
-      },
-    ],
-  },
-  apis: ["src/routes/*.js"], // Path to the API routes files
-};
-const specs = swaggerJsDoc(options);
+// const options = {
+//   definition: {
+//     openapi: "3.0.0",
+//     info: {
+//       title: "Express REST API",
+//       version: "1.0.0",
+//     },
+//     servers: [
+//       {
+//         url: "http://localhost:5000/api/v1",
+//       },
+//     ],
+//   },
+//   apis: ["src/routes/*.js"], // Path to the API routes files
+// };
+// const specs = swaggerJsDoc(options);
 
 // run swagger with swagger-jsdoc
 // app.use(
