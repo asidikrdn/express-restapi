@@ -1,7 +1,7 @@
 const {
   createRoleRequest,
   updateRoleRequest,
-} = require("../components/request");
+} = require("../component/request");
 const {
   UnauthorizedError,
   CreateError,
@@ -9,7 +9,7 @@ const {
   NotFoundError,
   UpdateError,
   BadRequestError,
-} = require("../components/response");
+} = require("../component/response");
 
 const findAll = {
   tags: ["Roles"],

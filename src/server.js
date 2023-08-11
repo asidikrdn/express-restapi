@@ -8,7 +8,7 @@ const cors = require("cors");
 // const { redisInit } = require("./service/redis");
 const mstRoleRouter = require("./routes/mstRoleRouter");
 const path = require("path");
-const customLogger = require("./middlewares/logger");
+const customLogger = require("./pkg/middlewares/logger");
 
 // create instance of express
 const app = express();

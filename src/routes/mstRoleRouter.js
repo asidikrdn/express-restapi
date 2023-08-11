@@ -6,7 +6,7 @@ const {
   deleteRole,
   createRole,
 } = require("../controllers/mstRoleController");
-const { superadminAuth } = require("../middlewares/auth");
+const { superadminAuth } = require("../pkg/middlewares/auth");
 
 router.get("/roles", superadminAuth, getAllRoles); // get all roles
 router.post("/roles/:id", superadminAuth, createRole); // get one role
