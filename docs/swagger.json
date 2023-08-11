@@ -1,0 +1,393 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Express REST API Boilerplate",
+    "description": "Documentation for express REST API boilerplate by asidikrdn",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api/v1",
+      "description": "Development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "example": {
+              "status": 401,
+              "message": "Token not found || Your'e not allowed to access this"
+            }
+          }
+        }
+      },
+      "BadRequestError": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "example": {
+              "status": 400,
+              "message": "request data invalid"
+            }
+          }
+        }
+      },
+      "UpdateError": {
+        "description": "Update failed",
+        "content": {
+          "application/json": {
+            "example": {
+              "status": 500,
+              "message": "error on update data"
+            }
+          }
+        }
+      },
+      "CreateError": {
+        "description": "Create failed",
+        "content": {
+          "application/json": {
+            "example": {
+              "status": 500,
+              "message": "error on create data"
+            }
+          }
+        }
+      },
+      "DeleteError": {
+        "description": "Delete failed",
+        "content": {
+          "application/json": {
+            "example": {
+              "status": 500,
+              "message": "error on delete data"
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Data not found",
+        "content": {
+          "application/json": {
+            "example": {
+              "status": 404,
+              "message": "error on get data"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/roles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get list of roles",
+        "description": "Retrieve a list of roles",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 200,
+                  "message": "OK",
+                  "totalData": 3,
+                  "totalPage": 1,
+                  "currentPage": 1,
+                  "data": [
+                    {
+                      "id": 1,
+                      "role": "Superadmin"
+                    },
+                    {
+                      "id": 2,
+                      "role": "Admin"
+                    },
+                    {
+                      "id": 3,
+                      "role": "User"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/roles/{roleId}": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Get detail of one role data",
+        "description": "Retrieve detail of one role data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "description": "role id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "id": 2,
+                    "role": "Admin"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Update some role data",
+        "description": "Update something detail of one role data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "description": "role id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for update role",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "role": "reseller"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "id": 4,
+                    "role": "reseller"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequestError"
+          },
+          "500": {
+            "$ref": "#/components/responses/UpdateError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Delete some role data",
+        "description": "Delete one role data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "description": "role id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "id": 4,
+                    "role": "reseller"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/DeleteError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Create role data",
+        "description": "Create one role data",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Request body for update role",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "role": "reseller"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "id": 4,
+                    "role": "reseller"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/CreateError"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    }
+  }
+}

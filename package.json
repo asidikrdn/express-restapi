@@ -33,7 +33,9 @@
     "pg-hstore": "^2.3.4",
     "redis": "^4.6.7",
     "sequelize": "^6.32.1",
-    "sequelize-cli": "^6.6.1"
+    "sequelize-cli": "^6.6.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
