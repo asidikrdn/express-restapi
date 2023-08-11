@@ -10,6 +10,20 @@ const customLogger = require("./middlewares/logger");
 // create instance of express
 const app = express();
 
+// cors configuration
+app.use(
+  cors({
+    origin: "*",
+    methods: ["HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: [
+      "Origin",
+      "X-Requested-With",
+      "Content-Type",
+      "Authorization",
+    ],
+  })
+);
+
 // connect to redis server
 // redisInit();
 
@@ -19,13 +33,6 @@ app.use(logger);
 
 // custom logger middleware
 app.use(customLogger);
-
-// cors configuration
-app.use(
-  cors({
-    origin: "*",
-  })
-);
 
 // app.use(loggingMiddleware);
 
