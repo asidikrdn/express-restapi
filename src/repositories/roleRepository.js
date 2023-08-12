@@ -21,7 +21,7 @@ exports.findAllRoles = async (offset = 0, limit = null, filter = {}) => {
   return response;
 };
 
-exports.findOneRole = async (roleId) => {
+exports.findRoleByID = async (roleId) => {
   const response = { data: null, error: null };
 
   try {

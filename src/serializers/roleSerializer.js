@@ -1,9 +1,13 @@
 const joi = require("joi");
+const { MstRoles } = require("../../db/models");
 
 exports.singleRoleResponse = (roleData) => {
+  const role =
+    roleData instanceof MstRoles ? roleData.get({ plain: true }) : roleData;
+
   return {
-    id: roleData.get({ plain: true }).id,
-    role: roleData.get({ plain: true }).role,
+    id: role.id,
+    role: role.role,
   };
 };
 
