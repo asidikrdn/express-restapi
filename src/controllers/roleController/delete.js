@@ -16,7 +16,9 @@ module.exports = async (req, res) => {
       req.params.id
     );
     if (errorGetOneRole) {
-      throw new Error(errorGetOneRole);
+      const error = new Error(errorGetOneRole);
+      error.status = httpStatus.NOT_FOUND;
+      throw error;
     }
 
     // delete role
@@ -24,7 +26,9 @@ module.exports = async (req, res) => {
       role
     );
     if (errorDeleteRole) {
-      throw new Error(errorDeleteRole);
+      const error = new Error(errorDeleteRole);
+      error.status = httpStatus.NOT_FOUND;
+      throw error;
     }
 
     // send success response

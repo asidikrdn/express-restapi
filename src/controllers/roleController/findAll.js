@@ -23,7 +23,9 @@ module.exports = async (req, res) => {
       error,
     } = await findAllRoles(offset, limit);
     if (error) {
-      throw new Error(error);
+      const errors = new Error(error);
+      errors.status = httpStatus.NOT_FOUND;
+      throw errors;
     }
 
     // send success response

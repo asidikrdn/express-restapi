@@ -11,7 +11,9 @@ module.exports = async (req, res) => {
     // get role by id
     const { data: role, error } = await findRoleByID(req.params.id);
     if (error) {
-      throw new Error(error);
+      const errors = new Error(error);
+      errors.status = httpStatus.NOT_FOUND;
+      throw errors;
     }
 
     // send success response
