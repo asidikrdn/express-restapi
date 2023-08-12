@@ -6,9 +6,9 @@ const morgan = require("morgan");
 require("dotenv").config(); // read environment variable from .env file
 const cors = require("cors");
 // const { redisInit } = require("./service/redis");
-const mstRoleRouter = require("./routes/mstRoleRouter");
 const path = require("path");
 const customLogger = require("./pkg/middlewares/logger");
+const router = require("./routes");
 
 // create instance of express
 const app = express();
@@ -65,13 +65,11 @@ app.use(logger);
 // custom logger middleware
 app.use(customLogger);
 
-// app.use(loggingMiddleware);
-
 // incoming request parser
 app.use(express.json());
 
 // create router group
-app.use("/api/v1/", mstRoleRouter);
+app.use("/api/v1/", router);
 
 // serving static files
 app.use("/static", express.static(path.join(__dirname, "../uploads")));
