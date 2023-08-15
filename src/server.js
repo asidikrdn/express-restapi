@@ -5,7 +5,7 @@ const swaggerDoc = require("../docs/swagger");
 const morgan = require("morgan");
 require("dotenv").config(); // read environment variable from .env file
 const cors = require("cors");
-// const { redisInit } = require("./service/redis");
+const { redisInit } = require("../config/redis");
 const path = require("path");
 const customLogger = require("./pkg/middlewares/logger");
 const router = require("./routes");
