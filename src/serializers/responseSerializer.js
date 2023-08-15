@@ -1,6 +1,13 @@
 const httpStatus = require("http-status");
 
-exports.successResponse = ({ res, status, data, totalData, limit, page }) => {
+exports.successResponse = ({
+  res,
+  status,
+  data,
+  totalData,
+  limit = 10,
+  page,
+}) => {
   res.status(status || httpStatus.OK).json({
     status: status || httpStatus.OK,
     message: "OK",
