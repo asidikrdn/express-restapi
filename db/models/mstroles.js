@@ -9,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      // child
+      this.hasMany(models.MstUsers, {
+        foreignKey: "roleId",
+        as: {
+          singular: "user",
+          plural: "users",
+        },
+      });
     }
   }
   MstRoles.init(
