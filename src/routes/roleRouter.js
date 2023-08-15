@@ -3,7 +3,7 @@ const roleController = require("../controllers/roleController");
 const { superadminAuth } = require("../pkg/middlewares/auth");
 
 router.get("/roles", superadminAuth, roleController.findAll); // find all roles
-router.post("/roles/:id", superadminAuth, roleController.create); // create new role
+router.post("/roles", superadminAuth, roleController.create); // create new role
 router.get("/roles/:id", superadminAuth, roleController.findByID); // find one role by id
 router.patch("/roles/:id", superadminAuth, roleController.update); // get one role
 router.delete("/roles/:id", superadminAuth, roleController.delete); // get one role
