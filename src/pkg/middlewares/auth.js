@@ -36,7 +36,7 @@ exports.adminAuth = async (req, res, next) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
       if (err) {
         throw err;
-      } else if (payload.role !== 1 && payload.role !== 2) {
+      } else if (payload.roleId !== 1 && payload.roleId !== 2) {
         throw new Error("Your'e not allowed to access this");
       }
       req.userData = payload;
@@ -62,7 +62,7 @@ exports.superadminAuth = async (req, res, next) => {
     jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
       if (err) {
         throw err;
-      } else if (payload.role !== 1) {
+      } else if (payload.roleId !== 1) {
         throw new Error("Your'e not allowed to access this");
       }
       req.userData = payload;
