@@ -1,6 +1,6 @@
 const { MstRoles } = require("../../db/models");
 
-exports.findAllRoles = async (offset = 0, limit = null, filter = {}) => {
+exports.findAllRoles = async (offset = 0, limit = 10, filter = {}) => {
   const response = { data: null, error: null, count: 0 };
 
   try {
