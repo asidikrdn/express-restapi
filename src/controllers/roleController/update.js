@@ -1,8 +1,7 @@
 const httpStatus = require("http-status");
 const {
-  findOneRole,
+  findRoleByID,
   updateRole,
-  deleteRole,
 } = require("../../repositories/roleRepository");
 const {
   singleRoleResponse,
@@ -16,7 +15,7 @@ const {
 module.exports = async (req, res) => {
   try {
     // get role by id
-    const { data: role, error: errorGetOneRole } = await findOneRole(
+    const { data: role, error: errorGetOneRole } = await findRoleByID(
       req.params.id
     );
     if (errorGetOneRole) {
