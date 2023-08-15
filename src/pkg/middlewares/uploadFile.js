@@ -5,7 +5,7 @@ const path = require("path");
 const diskStorage = multer.diskStorage({
   // konfigurasi lokasi penyimpanan file
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../../uploads"));
+    cb(null, path.join(__dirname, "../../../uploads"));
   },
   // konfigurasi penamaan file yang unik
   filename: function (req, file, cb) {
@@ -32,7 +32,7 @@ const upload = multer({
   },
 });
 
-exports.singleImage = async (req, res, next) => {
+exports.uploadSingleImage = async (req, res, next) => {
   upload.single("image")(req, res, function (err) {
     try {
       if (err instanceof multer.MulterError) {
@@ -72,12 +72,10 @@ exports.uploadMultipleImage = async (req, res, next) => {
       // Everything went fine.
       next();
     } catch (error) {
-      res
-        .status(httpStatus.INTERNAL_SERVER_ERROR)
-        .send({
-          status: httpStatus.INTERNAL_SERVER_ERROR,
-          message: error.message,
-        });
+      res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        status: httpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      });
     }
   });
 };
