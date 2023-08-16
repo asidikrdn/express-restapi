@@ -3,6 +3,8 @@ const {
   registerAdminRequest,
   updateUserRequest,
   loginRequest,
+  resendOTPRequest,
+  verifyOTPRequest,
 } = require("../component/request");
 const {
   UnauthorizedError,
@@ -395,6 +397,110 @@ const updateUser = {
   },
 };
 
+const checkAuth = {
+  tags: ["Auth"],
+  summary: "Check Auth",
+  description: "Checking is user still authenticated",
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+  responses: {
+    200: {
+      description: "Successful response",
+      content: {
+        "application/json": {
+          example: {
+            status: 200,
+            message: "OK",
+            totalPage: 1,
+            currentPage: 1,
+            data: {
+              id: "cbba6d45-bd49-45bd-a256-1c49ef05b5ca",
+              fullname: "Ahmad Sidik",
+              email: "sidikrudini16@gmail.com",
+              isEmailVerified: true,
+              phone: "087711356758",
+              isPhoneVerified: false,
+              address: "kota bogor",
+              image: null,
+              role: {
+                id: 3,
+                role: "User",
+              },
+            },
+          },
+        },
+      },
+    },
+    401: UnauthorizedError,
+  },
+};
+
+const resendOTP = {
+  tags: ["Auth"],
+  summary: "Resend OTP",
+  description: "Resend OTP Code to user's mail",
+  requestBody: resendOTPRequest,
+  responses: {
+    200: {
+      description: "Successful response",
+      content: {
+        "application/json": {
+          example: {
+            status: 200,
+            message: "OK",
+            totalPage: 1,
+            currentPage: 1,
+            data: "OTP successfully sent to user's email",
+          },
+        },
+      },
+    },
+    404: NotFoundError,
+    400: BadRequestError,
+  },
+};
+
+const verifyOTP = {
+  tags: ["Auth"],
+  summary: "Verify OTP",
+  description: "Verify OTP Code and change use's email to be verified",
+  requestBody: verifyOTPRequest,
+  responses: {
+    200: {
+      description: "Successful response",
+      content: {
+        "application/json": {
+          example: {
+            status: 200,
+            message: "OK",
+            totalPage: 1,
+            currentPage: 1,
+            data: {
+              id: "cbba6d45-bd49-45bd-a256-1c49ef05b5ca",
+              fullname: "Ahmad Sidik",
+              email: "sidikrudini16@gmail.com",
+              isEmailVerified: true,
+              phone: "087711356758",
+              isPhoneVerified: false,
+              address: "kota bogor",
+              image: null,
+              role: {
+                id: 3,
+                role: "User",
+              },
+            },
+          },
+        },
+      },
+    },
+    404: NotFoundError,
+    400: BadRequestError,
+  },
+};
+
 const userPath = {
   "/users": {
     get: findAll,
@@ -412,6 +518,15 @@ const userPath = {
   },
   "/register/admin": {
     post: registerAdmin,
+  },
+  "/checkauth": {
+    get: checkAuth,
+  },
+  "/resend-otp": {
+    post: resendOTP,
+  },
+  "/verify-otp": {
+    post: verifyOTP,
   },
 };
 

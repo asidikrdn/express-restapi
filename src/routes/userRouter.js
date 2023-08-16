@@ -16,5 +16,8 @@ router.delete("/users/:id", superadminAuth, userController.delete); // delete us
 router.post("/register", authController.register); // register user (with role = user)
 router.post("/register/admin", adminAuth, authController.register); // register admin (with role = admin)
 router.post("/login", authController.login); // register user (with role = user)
+router.get("/checkauth", userAuth, authController.checkAuth); // check auth
+router.post("/resend-otp", authController.resendOTP); // resend otp code to user
+router.post("/verify-otp", authController.verifyOTP); // verify otp code
 
 module.exports = router;

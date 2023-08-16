@@ -86,3 +86,36 @@ exports.validateLoginRequest = (userData) => {
     return error.message;
   }
 };
+
+exports.validateResendOTPRequest = (userData) => {
+  const schema = joi.object({
+    email: joi.string().email().required(),
+  });
+
+  try {
+    const { error } = schema.validate(userData, { allowUnknown: false });
+    if (error) {
+      throw new Error(`request data invalid: ${error}`);
+    }
+    return null;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+exports.validateUserVerificationRequest = (userData) => {
+  const schema = joi.object({
+    email: joi.string().email().required(),
+    otp: joi.number().required(),
+  });
+
+  try {
+    const { error } = schema.validate(userData, { allowUnknown: false });
+    if (error) {
+      throw new Error(`request data invalid: ${error}`);
+    }
+    return null;
+  } catch (error) {
+    return error.message;
+  }
+};

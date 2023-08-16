@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
     }
 
     // check is email/phone already used by another user
-    const { data: userByEmailAndPhone, error: errorFindUserByEmailAndPhone } =
+    const { error: errorFindUserByEmailAndPhone } =
       await findUserByEmailAndPhone(newUser.email, newUser.phone);
     if (!errorFindUserByEmailAndPhone) {
       const error = new Error("Email or Phone already used by another user");
@@ -65,13 +65,13 @@ module.exports = async (req, res) => {
     }
 
     // generate otp code
-    // const otp = otpCodeGenerator(4);
+    const otp = otpCodeGenerator(4);
 
     // store otp in redis for 5 minutes
-    // setValue(user.email, otp, 5 * 60);
+    setValue(user.email, otp, 5 * 60);
 
     // send otp code to email
-    // sendVerificationEmail(user, otp);
+    sendVerificationEmail(user, otp);
 
     // get user by id
     const { data: userRegistered, errorGetUser } = await findUserByID(user.id);

@@ -206,3 +206,47 @@ exports.updateUserRequest = {
     },
   },
 };
+
+exports.resendOTPRequest = {
+  description: "Request body for resend otp",
+  required: true,
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          email: {
+            type: "string",
+          },
+        },
+      },
+      example: {
+        email: "superadmin@mail.com",
+      },
+    },
+  },
+};
+
+exports.verifyOTPRequest = {
+  description: "Request body for resend otp",
+  required: true,
+  content: {
+    "application/json": {
+      schema: {
+        type: "object",
+        properties: {
+          email: {
+            type: "string",
+          },
+          otp: {
+            type: "string",
+          },
+        },
+      },
+      example: {
+        email: "superadmin@mail.com",
+        otp: "4557",
+      },
+    },
+  },
+};
