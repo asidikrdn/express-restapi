@@ -56,7 +56,7 @@ app.use(
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 // connect to redis server
-// redisInit();
+redisInit();
 
 // create logger instance
 const logger = morgan("dev");
