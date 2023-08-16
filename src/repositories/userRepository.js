@@ -96,8 +96,9 @@ exports.findUserByEmailAndPhone = async (email, phone) => {
   try {
     response.data = await MstUsers.findOne({
       where: {
-        [Op.or]: [{ email: email }, { phone: phone }],
+        [Op.or]: [email && { email: email }, phone && { phone: phone }],
       },
+      include: [{ model: MstRoles, as: "role" }],
     });
 
     if (!response.data) {
