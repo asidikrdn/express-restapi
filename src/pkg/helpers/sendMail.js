@@ -66,7 +66,7 @@ exports.sendVerificationEmail = async (user, token) => {
                                 <!-- <div>
                                   <img
                                     src="https://res.cloudinary.com/punyasidik/image/upload/v1673784410/WaysBeans/assets/NavbarIcon_ys9c4c.svg"
-                                    alt="SiGeSit"
+                                    alt="Express Boilerplate"
                                     class="CToWUd"
                                     data-bit="iit"
                                   />
@@ -85,7 +85,7 @@ exports.sendVerificationEmail = async (user, token) => {
                                   "
                                 >
                                   <span class="il">Verify</span> your email to
-                                  Register to <b>SiGesit</b>
+                                  Register to <b>Express Boilerplate</b>
                                 </h1>
                               </td>
                             </tr>
@@ -102,7 +102,7 @@ exports.sendVerificationEmail = async (user, token) => {
                             line-height: 24px;
                           "
                         >
-                          Hello <b>${user.fullName}</b>,
+                          Hello <b>${user.fullname}</b>,
                         </p>
                         <br />
                         <p
