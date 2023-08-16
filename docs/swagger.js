@@ -1,5 +1,6 @@
 const { bearerAuth } = require("./swagger/component/securityScheme");
 const rolePath = require("./swagger/path/role");
+const userPath = require("./swagger/path/user");
 
 const swaggerDefinition = {
   openapi: "3.0.0",
@@ -28,7 +29,7 @@ const swaggerDefinition = {
       bearerAuth: bearerAuth,
     },
   },
-  paths: { ...rolePath },
+  paths: { ...rolePath, ...userPath },
 };
 
 module.exports = swaggerDefinition;
