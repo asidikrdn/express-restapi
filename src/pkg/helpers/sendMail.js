@@ -225,8 +225,6 @@ exports.sendVerificationEmail = async (user, token) => {
   </html>
   `, // html body
     });
-
-    // console.log("Message sent: %s", info.messageId);
   } catch (error) {
     response.error = error.message;
   }

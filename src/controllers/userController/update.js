@@ -13,8 +13,6 @@ const {
   errorResponse,
 } = require("../../serializers/responseSerializer");
 const imageUrlGenerator = require("../../pkg/helpers/imgUrlGenerator");
-const { sendVerificationEmail } = require("../../pkg/helpers/sendMail");
-const otpCodeGenerator = require("../../pkg/helpers/otpCodeGenerator");
 
 module.exports = async (req, res) => {
   try {
@@ -59,12 +57,6 @@ module.exports = async (req, res) => {
       }
       user.email = req.body.email;
       user.isEmailVerified = false;
-      // generate otp code
-      // const otpCode = otpCodeGenerator(4);
-      // store otp in redis for 5 minutes
-      // setValue(user.email, otp, 5 * 60);
-      // send otp to user's mail
-      // sendVerificationEmail(user, otpCode);
     }
 
     // update phone
