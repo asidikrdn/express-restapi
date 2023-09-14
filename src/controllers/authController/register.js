@@ -15,11 +15,10 @@ const {
 const { hashPassword } = require("../../pkg/helpers/bcrypt");
 const otpCodeGenerator = require("../../pkg/helpers/otpCodeGenerator");
 const { sendVerificationEmail } = require("../../pkg/helpers/sendMail");
-const { setValue } = require("../../../config/redis");
+const { setRedisValue } = require("../../pkg/helpers/redis");
 
 module.exports = async (req, res) => {
   try {
-    console.log(req.userData);
     // get new user data from req body
     const newUser = {
       fullname: req.body.fullname,
@@ -27,17 +26,20 @@ module.exports = async (req, res) => {
       phone: req.body.phone,
       address: req.body.address,
       password: await hashPassword(req.body.password, 11),
-      /**
-       * user not logged in only can register as user
-       * admin only can register new user as user or admin
-       * superadmin can register new user with any role
-       */
-      roleId: !req.userData?.roleId
-        ? 3
-        : req.userData?.roleId == 2 && req.body.roleId != 1
-        ? req.body.roleId
-        : req.userData?.roleId == 1 && req.body.roleId,
     };
+
+    /**
+     * user not logged in only can register as user
+     * admin only can register new user as user or admin
+     * superadmin can register new user with any role
+     */
+    if (!req.userData?.roleId) {
+      newUser.roleId = 3;
+    } else if (req.userData?.roleId == 2 && req.body.roleId != 1) {
+      newUser.roleId = req.body.roleId;
+    } else if (req.userData?.roleId == 1) {
+      newUser.roleId = req.body.roleId;
+    }
 
     // validate the new user
     const error = validateCreateUserRequest(newUser);
@@ -66,15 +68,18 @@ module.exports = async (req, res) => {
 
     // generate otp code
     const otp = otpCodeGenerator(4);
+    const hashedOtp = hashPassword(otp, 11);
 
-    // store otp in redis for 5 minutes
-    setValue(user.email, otp, 5 * 60);
+    // store hashed otp in redis for 5 minutes
+    setRedisValue(user.email, hashedOtp, 5 * 60);
 
     // send otp code to email
     sendVerificationEmail(user, otp);
 
     // get user by id
-    const { data: userRegistered, errorGetUser } = await findUserByID(user.id);
+    const { data: userRegistered, error: errorGetUser } = await findUserByID(
+      user.id
+    );
     if (errorGetUser) {
       const errors = new Error(errorGetUser);
       errors.status = httpStatus.NOT_FOUND;
@@ -88,7 +93,6 @@ module.exports = async (req, res) => {
       data: singleUserResponse(userRegistered),
     });
   } catch (error) {
-    console.log(error);
     // send error response
     errorResponse({
       res: res,
