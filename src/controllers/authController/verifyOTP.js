@@ -53,7 +53,7 @@ module.exports = async (req, res) => {
       error.status = httpStatus.BAD_REQUEST;
       throw error;
     } else {
-      const isOtpValid = comparePassword(hashedOtp, req.body.otp);
+      const isOtpValid = await comparePassword(hashedOtp, req.body.otp);
 
       if (!isOtpValid) {
         const error = new Error("OTP token is not valid");
