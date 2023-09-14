@@ -1,8 +1,8 @@
 const { Logs } = require("../../../db/models");
 
 const logger = async (req, res, next) => {
-  startTime = Date.now();
-  // console.error("Response Data:", res.statusCode);
+  const startTime = Date.now();
+
   res.on("finish", function () {
     Logs.create({
       date: Date.now(),

@@ -11,7 +11,8 @@ const {
 } = require("../../serializers/responseSerializer");
 const otpCodeGenerator = require("../../pkg/helpers/otpCodeGenerator");
 const { sendVerificationEmail } = require("../../pkg/helpers/sendMail");
-const { setValue } = require("../../../config/redis");
+const { hashPassword } = require("../../pkg/helpers/bcrypt");
+const { setRedisValue } = require("../../pkg/helpers/redis");
 
 module.exports = async (req, res) => {
   try {
@@ -37,13 +38,24 @@ module.exports = async (req, res) => {
     }
 
     // generate OTP
-    let otp = otpCodeGenerator(4);
+    const otp = otpCodeGenerator(4);
+    const hashedOtp = await hashPassword(otp, 11);
 
-    // save otp in redis
-    setValue(req.body.email, otp, 4 * 60);
+    // store hashed otp in redis
+    const redisSetValErr = await setRedisValue(
+      req.body.email,
+      hashedOtp,
+      4 * 60
+    );
+    if (redisSetValErr) {
+      throw new Error(redisSetValErr);
+    }
 
     // send otp to user's mail
-    sendVerificationEmail(user, otp);
+    const { error: errSendEmail } = await sendVerificationEmail(user, otp);
+    if (errSendEmail) {
+      throw new Error(errSendEmail);
+    }
 
     successResponse({
       res: res,

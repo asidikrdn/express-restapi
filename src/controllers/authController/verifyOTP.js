@@ -11,7 +11,8 @@ const {
   successResponse,
   errorResponse,
 } = require("../../serializers/responseSerializer");
-const { getValue } = require("../../../config/redis");
+const { getRedisValue } = require("../../pkg/helpers/redis");
+const { comparePassword } = require("../../pkg/helpers/bcrypt");
 
 // VERIFY EMAIL BY OTP
 module.exports = async (req, res) => {
@@ -38,19 +39,27 @@ module.exports = async (req, res) => {
       throw error;
     }
 
-    // get otp from redis
-    const otp = await getValue(req.body.email);
-    console.log(otp);
+    // get hashed otp from redis
+    const { data: hashedOtp, error: errGetOtp } = await getRedisValue(
+      req.body.email
+    );
+    if (errGetOtp) {
+      throw new Error(errGetOtp);
+    }
 
     // validate otp token
-    if (!otp) {
+    if (!hashedOtp) {
       const error = new Error("OTP is not found or expired");
       error.status = httpStatus.BAD_REQUEST;
       throw error;
-    } else if (otp != req.body.otp) {
-      const error = new Error("OTP token is not valid");
-      error.status = httpStatus.BAD_REQUEST;
-      throw error;
+    } else {
+      const isOtpValid = comparePassword(hashedOtp, req.body.otp);
+
+      if (!isOtpValid) {
+        const error = new Error("OTP token is not valid");
+        error.status = httpStatus.BAD_REQUEST;
+        throw error;
+      }
     }
 
     // update isEmailVerified to true
