@@ -1,26 +1,23 @@
 const { createClient } = require("redis");
 
-const client = createClient({
-  url: `redis://:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URL}:${process.env.REDIS_PORT}/0`,
-});
+let redisClient;
+const redisUrl = `redis://:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URL}:${process.env.REDIS_PORT}/0`;
 
-// console.log(
-//   `URL : redis://:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URL}:${process.env.REDIS_PORT}/0`
-// );
+try {
+  redisClient = createClient({
+    url: redisUrl,
+  });
+} catch (error) {
+  console.error("Invalid Redis URL !");
+}
 
-client.on("error", (err) => console.log("Redis Client Error", err));
+exports.client = redisClient;
 
 exports.redisInit = async () => {
-  await client.connect();
-};
-
-exports.setValue = async (key, value, expiry) => {
-  await client.set(key, value, {
-    EX: expiry,
-  });
-};
-
-exports.getValue = async (key) => {
-  const value = await client.get(key);
-  return value;
+  try {
+    await redisClient.connect();
+    console.log("Redis connected successfully !");
+  } catch (error) {
+    console.log("Redis connection error", error);
+  }
 };
