@@ -1,6 +1,6 @@
 {
   "name": "express-restapi",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "REST API using nodejs with expressjs framework",
   "main": "./src/server.js",
   "scripts": {
