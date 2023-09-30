@@ -19,18 +19,13 @@ module.exports = async (req, res) => {
       throw errors;
     }
 
-    const { error: errorOnDeleteUser } = await deleteUser(user);
+    // delete user
+    const { data: userDeleted, error: errorOnDeleteUser } = await deleteUser(
+      user
+    );
     if (errorOnDeleteUser) {
       const errors = new Error(errorOnDeleteUser);
       errors.status = httpStatus.INTERNAL_SERVER_ERROR;
-      throw errors;
-    }
-
-    // get user by id
-    const { data: userDeleted, errorGetUser } = await findUserByID(user.id);
-    if (errorGetUser) {
-      const errors = new Error(errorGetUser);
-      errors.status = httpStatus.NOT_FOUND;
       throw errors;
     }
 
