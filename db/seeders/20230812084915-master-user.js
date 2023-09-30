@@ -25,8 +25,6 @@ module.exports = {
           email: process.env.SUPERADMIN_EMAIL,
           is_email_verified: true,
           password: await hashPassword(process.env.SUPERADMIN_PASSWORD, 11),
-          created_at: new Date(),
-          updated_at: new Date(),
         },
       ],
       {}

@@ -17,18 +17,12 @@ module.exports = {
       [
         {
           role: "Superadmin",
-          created_at: new Date(),
-          updated_at: new Date(),
         },
         {
           role: "Admin",
-          created_at: new Date(),
-          updated_at: new Date(),
         },
         {
           role: "User",
-          created_at: new Date(),
-          updated_at: new Date(),
         },
       ],
       {}
