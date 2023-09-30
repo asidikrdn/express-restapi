@@ -13,7 +13,9 @@ exports.findAllRoles = async (offset = 0, limit = 10, filter = {}) => {
       throw new Error("roles data not found");
     }
 
-    response.count = await MstRoles.count();
+    response.count = await MstRoles.count({
+      where: filter,
+    });
   } catch (error) {
     response.error = `error on get data : ${error.message}`;
   }

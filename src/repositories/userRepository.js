@@ -15,7 +15,9 @@ exports.findAllUsers = async (offset = 0, limit = 10, filter = {}) => {
       throw new Error("users data not found");
     }
 
-    response.count = await MstUsers.count();
+    response.count = await MstUsers.count({
+      where: filter,
+    });
   } catch (error) {
     response.error = `error on get data : ${error.message}`;
   }
