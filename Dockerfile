@@ -15,5 +15,8 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-EXPOSE 5000
-CMD [ "npm", "start" ]
+# set exposed port on documentation
+# EXPOSE 5000
+
+# set entrypoint
+# CMD [ "npm", "start" ]
