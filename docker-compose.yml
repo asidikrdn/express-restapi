@@ -33,7 +33,7 @@ services:
       - express-restapi-redis:/data:rw
 
   express-restapi:
-    image: asidikrdn/express-restapi:v1.1.0
+    image: asidikrdn/express-restapi:v1.1.1
     container_name: express-restapi
     restart: unless-stopped
     command: sh -c "npm run migrate-up && npm run seed-up && npm start"
