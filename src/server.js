@@ -16,7 +16,7 @@ const app = express();
 // cors configuration
 app.use(
   cors({
-    origin: "*",
+    origin: process.env.ORIGIN_ALLOWED,
     methods: ["HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: [
       "Origin",
