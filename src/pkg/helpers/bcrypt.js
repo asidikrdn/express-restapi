@@ -19,7 +19,6 @@ exports.hashPassword = async (value, saltRound) => {
 };
 
 exports.comparePassword = async (userPassword, inputedPassword) => {
-  console.log(userPassword, inputedPassword);
   const isValid = await bcrypt.compare(inputedPassword, userPassword);
 
   return isValid;

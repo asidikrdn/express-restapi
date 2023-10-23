@@ -72,8 +72,6 @@ exports.updateRole = async (role) => {
 exports.deleteRole = async (role) => {
   const response = { data: null, error: null };
 
-  console.log("destroy ->", role);
-
   try {
     response.data = await role.destroy();
   } catch (error) {
