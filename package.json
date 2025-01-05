@@ -5,7 +5,8 @@
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cross-env NODE_ENV=development NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "test:prod": "cross-env NODE_ENV=production NODE_OPTIONS=--experimental-vm-modules npx jest",
     "dev:migrate:up": "cross-env NODE_ENV=development npx sequelize db:migrate",
     "dev:migrate:down": "cross-env NODE_ENV=development npx sequelize db:migrate:undo:all",
     "dev:seed:up": "cross-env NODE_ENV=development npx sequelize db:seed:all",

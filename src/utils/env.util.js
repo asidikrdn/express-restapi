@@ -21,7 +21,7 @@ export const DB_USERNAME = secrets?.DB_USERNAME || process.env.DB_USERNAME;
 export const DB_PASSWORD = secrets?.DB_PASSWORD || process.env.DB_PASSWORD;
 
 export const API_KEY = secrets?.API_KEY || process.env.API_KEY;
-export const TZ = secrets?.TZ || process.env.TZ;
+export const TZ = secrets?.TZ || process.env.TZ || "Asia/Jakarta";
 export const PORT = process.env.PORT || 5000;
 
 export const CORS_ORIGIN = secrets?.CORS_ORIGIN || process.env.CORS_ORIGIN;

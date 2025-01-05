@@ -1,6 +1,6 @@
 import _ from "lodash";
 import moment from "moment-timezone";
-import { TZ } from "./env.util";
+import { TZ } from "./env.util.js";
 
 /**
  * Transforms an object from snake_case to camelCase.
@@ -55,9 +55,17 @@ export const omitDeletedAtProperties = (obj) => {
   if (Array.isArray(obj)) {
     return obj.map((item) => omitDeletedAtProperties(item));
   } else if (obj !== null && typeof obj === "object") {
-    return _.omitBy(
-      obj,
-      (value, key) => key === "deleted_at" || key === "deletedAt"
+    return _.mapValues(
+      _.omitBy(
+        obj,
+        (value, key) => key === "deleted_at" || key === "deletedAt"
+      ),
+      (value) => {
+        if (value instanceof Date) {
+          return value;
+        }
+        return omitDeletedAtProperties(value);
+      }
     );
   }
   return obj;
@@ -72,7 +80,12 @@ export const omitPasswordProperty = (obj) => {
   if (Array.isArray(obj)) {
     return obj.map((item) => omitPasswordProperty(item));
   } else if (obj !== null && typeof obj === "object") {
-    return _.omit(obj, "password");
+    return _.mapValues(_.omit(obj, "password"), (value) => {
+      if (value instanceof Date) {
+        return value;
+      }
+      return omitPasswordProperty(value);
+    });
   }
   return obj;
 };
