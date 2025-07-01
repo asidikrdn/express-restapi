@@ -7,7 +7,7 @@ import {
   PORT,
   CORS_HEADER,
   CORS_METHOD,
-} from "./utils/env.util.js";
+} from "./utils/env.js";
 
 // Initialize Express app
 const app = express();

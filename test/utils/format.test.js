@@ -4,7 +4,7 @@ import {
   omitPasswordProperty,
   transformCamelToSnake,
   transformSnakeToCamel,
-} from "../../src/utils/format.util.js";
+} from "../../src/utils/format.js";
 
 // Utility test for format functions
 describe("Format Utility Tests", () => {

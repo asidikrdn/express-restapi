@@ -1,5 +1,5 @@
 import process from "process";
-import loadEnv from "../config/dotenv.config.js";
+import loadEnv from "../config/dotenv.js";
 
 // Set environment mode
 export const NODE_ENV = process.env.NODE_ENV;

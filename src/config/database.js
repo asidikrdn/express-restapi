@@ -5,7 +5,7 @@ import {
   DB_PASSWORD,
   DB_SCHEMA,
   DB_USERNAME,
-} from "../utils/env.util.js";
+} from "../utils/env.js";
 
 // Helper to generate config for each environment
 const createConfig = (overrides = {}) => ({
