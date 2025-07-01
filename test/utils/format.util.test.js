@@ -5,11 +5,12 @@ import {
   transformCamelToSnake,
   transformSnakeToCamel,
 } from "../../src/utils/format.util";
-import _ from "lodash";
 
+// Utility test for format functions
 describe("Format Utility Tests", () => {
+  // --- Transform Functions ---
   describe("Transform Functions", () => {
-    const mockDataSnake = [
+    const mockSnake = [
       {
         first_name: "John",
         last_name: "Doe",
@@ -24,23 +25,7 @@ describe("Format Utility Tests", () => {
       },
     ];
 
-    test("test transformSnakeToCamel with single object", () => {
-      const result = transformSnakeToCamel(mockDataSnake[0]);
-      _.forIn(result, (val, key) => {
-        expect(/^[a-z]+([A-Z][a-z]*)*$/.test(key)).toBe(true);
-      });
-    });
-
-    test("test transformSnakeToCamel with array of object", () => {
-      const result = transformSnakeToCamel(mockDataSnake);
-      result.forEach((res) => {
-        _.forIn(res, (val, key) => {
-          expect(/^[a-z]+([A-Z][a-z]*)*$/.test(key)).toBe(true);
-        });
-      });
-    });
-
-    const mockDataCamel = [
+    const mockCamel = [
       {
         firstName: "Jane",
         lastName: "Doe",
@@ -57,76 +42,90 @@ describe("Format Utility Tests", () => {
       },
     ];
 
-    test("test transformCamelToSnake with single object", () => {
-      const result = transformCamelToSnake(mockDataCamel[0]);
-      _.forIn(result, (val, key) => {
+    // Test snake_case to camelCase
+    test("transformSnakeToCamel: single object", () => {
+      const result = transformSnakeToCamel(mockSnake[0]);
+      // Pastikan semua key sudah camelCase
+      Object.keys(result).forEach((key) => {
+        expect(/^[a-z]+([A-Z][a-z]*)*$/.test(key)).toBe(true);
+      });
+    });
+
+    test("transformSnakeToCamel: array of objects", () => {
+      const result = transformSnakeToCamel(mockSnake);
+      result.forEach((obj) => {
+        Object.keys(obj).forEach((key) => {
+          expect(/^[a-z]+([A-Z][a-z]*)*$/.test(key)).toBe(true);
+        });
+      });
+    });
+
+    // Test camelCase to snake_case
+    test("transformCamelToSnake: single object", () => {
+      const result = transformCamelToSnake(mockCamel[0]);
+      // Pastikan semua key sudah snake_case
+      Object.keys(result).forEach((key) => {
         expect(/^[a-z]+(_[a-z]+)*$/.test(key)).toBe(true);
       });
     });
 
-    test("test transformCamelToSnake with array of object", () => {
-      const result = transformCamelToSnake(mockDataCamel);
-      result.forEach((res) => {
-        _.forIn(res, (val, key) => {
+    test("transformCamelToSnake: array of objects", () => {
+      const result = transformCamelToSnake(mockCamel);
+      result.forEach((obj) => {
+        Object.keys(obj).forEach((key) => {
           expect(/^[a-z]+(_[a-z]+)*$/.test(key)).toBe(true);
         });
       });
     });
   });
 
+  // --- Omit Functions ---
   describe("Omit Functions", () => {
-    const mockDataWithDeletedAt = [
-      {
-        id: 1,
-        name: "Test User",
-        deleted_at: "2025-01-01T00:00:00Z",
-      },
-      {
-        id: 2,
-        name: "User Test",
-        deleted_at: "2025-01-02T00:00:00Z",
-      },
+    const mockWithDeletedAt = [
+      { id: 1, name: "Test User", deleted_at: "2025-01-01T00:00:00Z" },
+      { id: 2, name: "User Test", deleted_at: "2025-01-02T00:00:00Z" },
     ];
 
-    test("test omitDeletedAtProperties with single object", () => {
-      const result = omitDeletedAtProperties(mockDataWithDeletedAt[0]);
+    const mockWithPassword = [
+      { id: 1, name: "Test User", password: "secret" },
+      { id: 2, name: "User Test", password: "secret" },
+    ];
+
+    // Test hapus properti deleted_at/deletedAt
+    test("omitDeletedAtProperties: single object", () => {
+      const result = omitDeletedAtProperties(mockWithDeletedAt[0]);
       ["deleted_at", "deletedAt"].forEach((key) => {
         expect(result).not.toHaveProperty(key);
       });
     });
 
-    test("test omitDeletedAtProperties with array object", () => {
-      const result = omitDeletedAtProperties(mockDataWithDeletedAt);
-      result.forEach((res) => {
+    test("omitDeletedAtProperties: array of objects", () => {
+      const result = omitDeletedAtProperties(mockWithDeletedAt);
+      result.forEach((obj) => {
         ["deleted_at", "deletedAt"].forEach((key) => {
-          expect(res).not.toHaveProperty(key);
+          expect(obj).not.toHaveProperty(key);
         });
       });
     });
 
-    const mockDataWithPassword = [
-      {
-        id: 1,
-        name: "Test User",
-        password: "secret",
-      },
-      {
-        id: 2,
-        name: "User Test",
-        password: "secret",
-      },
-    ];
-
-    test("test omitPasswordProperty with single object", () => {
-      const result = omitPasswordProperty(mockDataWithPassword[0]);
+    // Test hapus properti password
+    test("omitPasswordProperty: single object", () => {
+      const result = omitPasswordProperty(mockWithPassword[0]);
       expect(result).not.toHaveProperty("password");
     });
 
-    test("test omitPasswordProperty with single object", () => {
-      const result = omitPasswordProperty(mockDataWithPassword);
-      result.forEach((res) => {
-        expect(res).not.toHaveProperty("password");
+    test("omitPasswordProperty: array of objects", () => {
+      const result = omitPasswordProperty(mockWithPassword);
+      result.forEach((obj) => {
+        expect(obj).not.toHaveProperty("password");
       });
     });
   });
 });
+
+/*
+  Catatan:
+  - Setiap fungsi diuji untuk input object tunggal dan array of objects.
+  - Regex pada expect memastikan format key sesuai (camelCase atau snake_case).
+  - Fungsi omit diuji agar field sensitif/deleted tidak ada di hasil.
+*/

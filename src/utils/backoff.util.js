@@ -1,15 +1,11 @@
 /**
- * Executes a function with an exponential backoff strategy in case of failures.
+ * Executes an async function with exponential backoff on failure.
  *
- * This function attempts to execute the provided asynchronous function `fn`.
- * If the function fails, it will retry the execution with an exponential backoff
- * delay until the maximum number of retries is reached.
- *
- * @param {Function} fn - The asynchronous function to execute. It should return a promise.
- * @param {number} [initialBackoff=2] - The base backoff time in seconds. The delay will double with each retry.
- * @param {number} [maxRetries=10] - The maximum number of retry attempts before giving up.
- * @returns {Promise<*>} - A promise that resolves to the result of the function if successful.
- * @throws {Error} Throws an error if the maximum number of retries is reached.
+ * @param {Function} fn - Async function returning a promise.
+ * @param {number} [initialBackoff=2] - Initial backoff time in seconds.
+ * @param {number} [maxRetries=10] - Maximum retry attempts.
+ * @returns {Promise<*>} - Result of the function if successful.
+ * @throws {Error} - If all retries fail.
  */
 export const exponentialBackoff = async (
   fn,
@@ -21,17 +17,14 @@ export const exponentialBackoff = async (
 
   while (attempt < maxRetries) {
     try {
-      const result = await fn();
-      return result;
+      return await fn();
     } catch (error) {
-      console.error(`Attempt ${attempt + 1} failed: ${error.message}`);
       attempt++;
-      if (attempt < maxRetries) {
-        await new Promise((resolve) => setTimeout(resolve, backoff));
-        backoff *= 2;
-      } else {
+      if (attempt >= maxRetries) {
         throw new Error(`Max retries reached. Last error: ${error.message}`);
       }
+      await new Promise(res => setTimeout(res, backoff));
+      backoff *= 2;
     }
   }
 };

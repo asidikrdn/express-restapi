@@ -6,10 +6,7 @@
  * @returns {Object|Array} - The plain object or array of plain objects extracted from the Sequelize instances.
  */
 export const extractSequelizeData = (data) => {
-  if (Array.isArray(data)) {
-    return data.map((item) => extractSequelizeData(item));
-  } else if (data !== null && typeof data === "object") {
-    return { ...data.toJSON() };
-  }
+  if (Array.isArray(data)) return data.map(extractSequelizeData);
+  if (data && typeof data.toJSON === "function") return data.toJSON();
   return data;
 };

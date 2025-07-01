@@ -9,10 +9,10 @@ import {
   CORS_METHOD,
 } from "./utils/env.util.js";
 
-// create instance of express
+// Initialize Express app
 const app = express();
 
-// cors configuration
+// Configure CORS
 app.use(
   cors({
     origin: CORS_ORIGIN ? CORS_ORIGIN.split(",") : "*",
@@ -21,17 +21,13 @@ app.use(
   })
 );
 
-// create logger instance
-const morganFormat = NODE_ENV === "production" ? "combined" : "dev";
-app.use(morgan(morganFormat));
+// Set up HTTP request logger
+app.use(morgan(NODE_ENV === "production" ? "combined" : "dev"));
 
-// incoming request parser
+// Parse incoming JSON requests
 app.use(express.json());
 
-// get port from environment variable, if not exist then use default port 5000
-const port = PORT;
-
-// run server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

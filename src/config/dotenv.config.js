@@ -4,46 +4,34 @@ import process from "process";
 /**
  * Loads environment variables from a specified .env file based on the provided environment.
  *
- * @param {string} env - The environment to load variables for. Can be "development", "production", or any other string.
- * If the environment is not recognized, the application will read global environment variables.
- *
- * @throws {Error} Will log an error if loading the environment variables fails.
+ * @param {string} env - The environment to load variables for.
  */
 const loadEnv = (env) => {
-  switch (env) {
-    case "development":
-      // dev
-      try {
-        configDotenv({ path: `${process.cwd()}/.env.development.local` });
-      } catch (error) {
-        console.log(
-          "Error loading environment variables file, the apps will read global environtment variabels on this system"
-        );
-        console.error("Error message :", error.message);
-      }
+  let envFile;
+  let envLabel;
 
-      console.log("=== using development environment ===");
-      break;
+  if (env === "development") {
+    envFile = ".env.development.local";
+    envLabel = "development";
+  } else if (env === "production") {
+    envFile = ".env.production.local";
+    envLabel = "production";
+  }
 
-    case "production":
-      // prod
-      try {
-        configDotenv({ path: `${process.cwd()}/.env.production.local` });
-      } catch (error) {
-        console.log(
-          "Error loading environment variables file, the apps will read global environtment variabels on this system"
-        );
-        console.error("Error message :", error.message);
-      }
-
-      console.log("=== using production environment ===");
-      break;
-
-    default:
-      console.log(
-        "=== the apps will read global environtment variabels on this system ==="
+  if (envFile) {
+    try {
+      configDotenv({ path: `${process.cwd()}/${envFile}` });
+      console.info(`=== using ${envLabel} environment ===`);
+    } catch (error) {
+      console.warn(
+        "Error loading environment variables file, the app will read global environment variables on this system"
       );
-      break;
+      console.warn("Error message:", error.message);
+    }
+  } else {
+    console.info(
+      "=== the app will read global environment variables on this system ==="
+    );
   }
 };
 

@@ -2,6 +2,7 @@ import moment from "moment-timezone";
 import { exponentialBackoff } from "../../src/utils/backoff.util";
 import { expect, jest, test, describe, beforeEach } from "@jest/globals";
 
+// Test suite for exponentialBackoff utility
 describe("exponentialBackoff", () => {
   let mockFn;
 
@@ -9,14 +10,16 @@ describe("exponentialBackoff", () => {
     mockFn = jest.fn();
   });
 
-  test("should resolve successfully on the first attempt", async () => {
+  // Test: resolves immediately if no error
+  test("resolves on first attempt", async () => {
     mockFn.mockResolvedValue("Success");
     const result = await exponentialBackoff(mockFn);
     expect(result).toBe("Success");
     expect(mockFn).toHaveBeenCalledTimes(1);
   });
 
-  test("should retry on failure and resolve successfully", async () => {
+  // Test: retries once on failure, then succeeds
+  test("retries on failure and then resolves", async () => {
     mockFn
       .mockRejectedValueOnce(new Error("First attempt failed"))
       .mockResolvedValue("Success");
@@ -26,7 +29,8 @@ describe("exponentialBackoff", () => {
     expect(mockFn).toHaveBeenCalledTimes(2);
   });
 
-  test("should throw an error after reaching max retries", async () => {
+  // Test: throws after max retries
+  test("throws after reaching max retries", async () => {
     mockFn.mockRejectedValue(new Error("Always fails"));
 
     await expect(exponentialBackoff(mockFn, 1, 3)).rejects.toThrow(
@@ -35,37 +39,36 @@ describe("exponentialBackoff", () => {
     expect(mockFn).toHaveBeenCalledTimes(3);
   });
 
-  test("should use the correct backoff times", async () => {
-    mockFn
-      .mockRejectedValueOnce(new Error("First attempt failed"))
-      .mockRejectedValueOnce(new Error("Second attempt failed"))
-      .mockRejectedValueOnce(new Error("Third attempt failed"))
-      .mockResolvedValue("Success");
+  // Test: correct backoff timing between retries
+  test(
+    "uses correct backoff times",
+    async () => {
+      mockFn
+        .mockRejectedValueOnce(new Error("First attempt failed"))
+        .mockRejectedValueOnce(new Error("Second attempt failed"))
+        .mockRejectedValueOnce(new Error("Third attempt failed"))
+        .mockResolvedValue("Success");
 
-    const initialBackoff = 1;
-    const maxRetries = 4;
+      const initialBackoff = 1;
+      const maxRetries = 4;
 
-    const start = moment();
-    await exponentialBackoff(mockFn, initialBackoff, maxRetries);
-    const end = moment();
+      const start = moment();
+      await exponentialBackoff(mockFn, initialBackoff, maxRetries);
+      const end = moment();
 
-    let backoffDuration = 1000;
-    let expectDuration = 0;
-    for (let i = initialBackoff; i < maxRetries; i++) {
-      if (i == 1) {
-        backoffDuration *= initialBackoff;
-        expectDuration += backoffDuration * initialBackoff;
-      } else {
-        backoffDuration *= 2;
-        expectDuration += backoffDuration;
+      // Calculate expected total backoff duration
+      let backoff = 1000;
+      let expectedDuration = 0;
+      for (let i = initialBackoff; i < maxRetries; i++) {
+        backoff *= i === 1 ? initialBackoff : 2;
+        expectedDuration += backoff;
       }
-    }
-    const realDuration = end.diff(start, "millisecond");
+      const actualDuration = end.diff(start, "millisecond");
 
-    // console.log(expectDuration, realDuration);
-
-    expect(mockFn).toHaveBeenCalledTimes(4);
-    expect(realDuration).toBeGreaterThanOrEqual(expectDuration);
-    expect(realDuration).toBeLessThanOrEqual(expectDuration + 100);
-  }, 10000);
+      expect(mockFn).toHaveBeenCalledTimes(4);
+      expect(actualDuration).toBeGreaterThanOrEqual(expectedDuration);
+      expect(actualDuration).toBeLessThanOrEqual(expectedDuration + 100);
+    },
+    10000 // timeout for this test
+  );
 });
