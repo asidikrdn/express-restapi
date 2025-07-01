@@ -38,11 +38,11 @@
   },
   "homepage": "https://github.com/asidikrdn/express-restapi#readme",
   "dependencies": {
-    "@infisical/sdk": "^3.0.4",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "http-status": "^2.0.0",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.46",
     "morgan": "^1.10.0",

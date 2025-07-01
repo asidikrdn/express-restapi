@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { randomBytes } from "crypto";
+import { JWT_SECRET } from "../utils/env.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 const CSRF_TOKEN_NAME = "x-csrf-token";
 const CSRF_COOKIE_NAME = "csrf_token";
 
