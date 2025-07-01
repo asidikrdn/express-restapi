@@ -1,8 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/user.model.js";
+import db from "../models/index.js";
 import { generateToken } from "../utils/jwt.js";
 import HttpStatus from "http-status";
+
+const { User } = db;
 
 // Register user
 export const register = async (req, res) => {
@@ -40,11 +42,15 @@ export const login = async (req, res) => {
     }
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({ message: "Invalid credentials" });
+      return res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ message: "Invalid credentials" });
     }
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({ message: "Invalid credentials" });
+      return res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ message: "Invalid credentials" });
     }
     const token = generateToken(user);
     req.session.jwt = token; // Simpan token di session
@@ -60,14 +66,18 @@ export const login = async (req, res) => {
 export const checkAuth = async (req, res) => {
   try {
     if (!req.user) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({ message: "Not authenticated" });
+      return res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ message: "Not authenticated" });
     }
     // Optionally, fetch fresh user data from DB
     const user = await User.findByPk(req.user.id, {
       attributes: ["id", "username", "email"],
     });
     if (!user) {
-      return res.status(HttpStatus.UNAUTHORIZED).json({ message: "User not found" });
+      return res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ message: "User not found" });
     }
     res.json({
       user: { id: user.id, username: user.username, email: user.email },
@@ -95,7 +105,10 @@ export const getUserById = async (req, res) => {
     const user = await User.findByPk(req.params.id, {
       attributes: ["id", "username", "email", "createdAt", "updatedAt"],
     });
-    if (!user) return res.status(HttpStatus.NOT_FOUND).json({ message: "User not found" });
+    if (!user)
+      return res
+        .status(HttpStatus.NOT_FOUND)
+        .json({ message: "User not found" });
     res.json(user);
   } catch (err) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
@@ -107,7 +120,10 @@ export const updateUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(HttpStatus.NOT_FOUND).json({ message: "User not found" });
+    if (!user)
+      return res
+        .status(HttpStatus.NOT_FOUND)
+        .json({ message: "User not found" });
     if (username) user.username = username;
     if (email) user.email = email;
     if (password) user.password = await bcrypt.hash(password, 10);
@@ -122,7 +138,10 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(HttpStatus.NOT_FOUND).json({ message: "User not found" });
+    if (!user)
+      return res
+        .status(HttpStatus.NOT_FOUND)
+        .json({ message: "User not found" });
     await user.destroy();
     res.json({ message: "User deleted" });
   } catch (err) {

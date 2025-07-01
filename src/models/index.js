@@ -20,7 +20,7 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import Sequelize from 'sequelize';
 import process from 'process';
 import configFile from '../config/database.js';
@@ -48,7 +48,7 @@ fs
     !file.startsWith('.')
   )
   .forEach(file => {
-    import(path.join(__dirname, file)).then((module) => {
+    import(pathToFileURL(path.join(__dirname, file)).href).then((module) => {
       const model = module.default(sequelize, Sequelize.DataTypes);
       db[model.name] = model;
     });
