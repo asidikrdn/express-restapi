@@ -1,16 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
-import { JWT_SECRET } from "../utils/env.js";
+import { generateToken } from "../utils/jwt.js";
 
-// Helper: generate JWT token
-const generateToken = (user) => {
-  return jwt.sign(
-    { id: user.id, username: user.username, email: user.email },
-    JWT_SECRET,
-    { expiresIn: "1d" }
-  );
-};
 // Register user
 export const register = async (req, res) => {
   try {
