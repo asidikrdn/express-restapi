@@ -1,22 +1,22 @@
-FROM node:18.14.2
+FROM node:22-slim
 
-# Create app directory
+# Set environment variable
+ENV NODE_ENV=production
+
+# Set working directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
+# Install production dependencies
+RUN npm ci --omit=dev
 
-# Bundle app source
+# Copy the rest of the application code
 COPY . .
 
-# set exposed port on documentation
-# EXPOSE 5000
+# Expose the application port
+EXPOSE 5000
 
-# set entrypoint
-# CMD [ "npm", "start" ]
+# Start the application
+CMD ["npm", "start"]

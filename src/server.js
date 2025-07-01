@@ -1,83 +1,53 @@
-const express = require("express");
-const swaggerJsDoc = require("swagger-jsdoc");
-const swaggerUi = require("swagger-ui-express");
-const swaggerDoc = require("../docs/swagger");
-const morgan = require("morgan");
-require("dotenv").config(); // read environment variable from .env file
-const cors = require("cors");
-const { redisInit } = require("../config/redis");
-const path = require("path");
-const customLogger = require("./pkg/middlewares/logger");
-const router = require("./routes");
+import express from "express";
+import morgan from "morgan";
+import cors from "cors";
+import session from "express-session";
+import cookieParser from "cookie-parser";
+import { publicRouter, protectedRouter } from "./routes/index.js";
+import { generateCsrfToken, verifyCsrfToken } from "./middlewares/auth.js";
+import {
+  NODE_ENV,
+  CORS_ORIGIN,
+  PORT,
+  CORS_HEADER,
+  CORS_METHOD,
+  SESSION_SECRET,
+} from "./utils/env.js";
 
-// create instance of express
+// Initialize Express app
 const app = express();
 
-// cors configuration
+// Configure CORS
 app.use(
   cors({
-    origin: process.env.ORIGIN_ALLOWED,
-    methods: ["HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
-    allowedHeaders: [
-      "Origin",
-      "X-Requested-With",
-      "Content-Type",
-      "Authorization",
-    ],
+    origin: CORS_ORIGIN ? CORS_ORIGIN.split(",") : "*",
+    methods: CORS_METHOD ? CORS_METHOD.split(",") : "*",
+    allowedHeaders: CORS_HEADER ? CORS_HEADER.split(",") : "*",
   })
 );
 
-// setup swagger jsdoc
-// const options = {
-//   definition: {
-//     openapi: "3.0.0",
-//     info: {
-//       title: "Express REST API",
-//       version: "1.0.0",
-//     },
-//     servers: [
-//       {
-//         url: "http://localhost:5000/api/v1",
-//       },
-//     ],
-//   },
-//   apis: ["src/routes/*.js"], // Path to the API routes files
-// };
-// const specs = swaggerJsDoc(options);
+// Set up HTTP request logger
+app.use(morgan(NODE_ENV === "production" ? "combined" : "dev"));
 
-// run swagger with swagger-jsdoc
-// app.use(
-//   "/api-docs",
-//   swaggerUi.serve,
-//   swaggerUi.setup(specs, { explorer: true })
-// );
-
-// run swagger with json
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
-
-// connect to redis server
-redisInit();
-
-// create logger instance
-const logger = morgan("dev");
-app.use(logger);
-
-// custom logger middleware
-app.use(customLogger);
-
-// incoming request parser
+// Parse incoming JSON requests
 app.use(express.json());
+app.use(cookieParser());
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: NODE_ENV === "production" },
+  })
+);
 
-// create router group
-app.use("/api/v1/", router);
+// Public routes
+app.use("/api", publicRouter);
 
-// serving static files
-app.use("/static", express.static(path.join(__dirname, "../uploads")));
+// Protected routes
+app.use("/api", generateCsrfToken, verifyCsrfToken, protectedRouter);
 
-// get port from environment variable, if not exist then use default port 5000
-const port = process.env.PORT || 5000;
-
-// run server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

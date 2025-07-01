@@ -1,11 +1,13 @@
-const express = require("express");
-const mstRoleRouter = require("./roleRouter");
-const mstUserRouter = require("./userRouter");
+import express from "express";
+import { publicUserRouter, protectedUserRouter } from "./user.routes.js";
 
-const router = express.Router();
+const publicRouter = express.Router();
+const protectedRouter = express.Router();
 
-// Set up your routes
-router.use(mstRoleRouter);
-router.use(mstUserRouter);
+// Public routes
+publicRouter.use("/users", publicUserRouter);
 
-module.exports = router;
+// Protected routes
+protectedRouter.use("/users", protectedUserRouter);
+
+export { publicRouter, protectedRouter };

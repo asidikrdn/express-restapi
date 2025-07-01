@@ -1,9 +1,18 @@
-# Dependency directories
-node_modules/
-jspm_packages/
+# Version control
+.git
+
+# Dependencies
+node_modules
+
+# Build output & cache
+dist
+build
+coverage
+.nyc_output
 
 # Logs
-npm-debug.log
+*.log
 
-# dotenv environment variable files
+# Environment files
 .env
+.env.*
