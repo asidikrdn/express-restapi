@@ -44,7 +44,7 @@ app.use(
 // Public routes
 app.use("/api", publicRouter);
 
-// Protected routes (pasang CSRF & auth middleware di sini)
+// Protected routes
 app.use("/api", generateCsrfToken, verifyCsrfToken, protectedRouter);
 
 // Start server
