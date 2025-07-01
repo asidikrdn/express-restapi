@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { randomBytes } from "crypto";
 import { JWT_SECRET } from "../utils/env.js";
+import HttpStatus from "http-status";
 
 const CSRF_TOKEN_NAME = "x-csrf-token";
 const CSRF_COOKIE_NAME = "csrf_token";
@@ -24,11 +25,15 @@ export const generateCsrfToken = (req, res, next) => {
 export const authenticateJWT = (req, res, next) => {
   const token = req.session && req.session.jwt;
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized: No token provided" });
+    return res
+      .status(HttpStatus.UNAUTHORIZED)
+      .json({ message: "Unauthorized: No token provided" });
   }
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {
-      return res.status(403).json({ message: "Forbidden: Invalid token" });
+      return res
+        .status(HttpStatus.FORBIDDEN)
+        .json({ message: "Forbidden: Invalid token" });
     }
     req.user = user;
     next();
@@ -45,7 +50,9 @@ export const verifyCsrfToken = (req, res, next) => {
   const csrfHeader = req.headers[CSRF_TOKEN_NAME];
 
   if (!csrfCookie || !csrfHeader || csrfCookie !== csrfHeader) {
-    return res.status(403).json({ message: "Forbidden: Invalid CSRF token" });
+    return res
+      .status(HttpStatus.FORBIDDEN)
+      .json({ message: "Forbidden: Invalid CSRF token" });
   }
   next();
 };

@@ -2,23 +2,30 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import { generateToken } from "../utils/jwt.js";
+import HttpStatus from "http-status";
 
 // Register user
 export const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: "All fields are required" });
     }
     const exists = await User.findOne({ where: { email } });
     if (exists) {
-      return res.status(409).json({ message: "Email already registered" });
+      return res
+        .status(HttpStatus.CONFLICT)
+        .json({ message: "Email already registered" });
     }
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({ username, email, password: hash });
-    res.status(201).json({ user: { id: user.id, username, email } });
+    res
+      .status(HttpStatus.CREATED)
+      .json({ user: { id: user.id, username, email } });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
   }
 };
 
@@ -27,15 +34,17 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password required" });
+      return res
+        .status(HttpStatus.BAD_REQUEST)
+        .json({ message: "Email and password required" });
     }
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(HttpStatus.UNAUTHORIZED).json({ message: "Invalid credentials" });
     }
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(HttpStatus.UNAUTHORIZED).json({ message: "Invalid credentials" });
     }
     const token = generateToken(user);
     req.session.jwt = token; // Simpan token di session
@@ -43,7 +52,7 @@ export const login = async (req, res) => {
       user: { id: user.id, username: user.username, email: user.email },
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
   }
 };
 
@@ -51,20 +60,20 @@ export const login = async (req, res) => {
 export const checkAuth = async (req, res) => {
   try {
     if (!req.user) {
-      return res.status(401).json({ message: "Not authenticated" });
+      return res.status(HttpStatus.UNAUTHORIZED).json({ message: "Not authenticated" });
     }
     // Optionally, fetch fresh user data from DB
     const user = await User.findByPk(req.user.id, {
       attributes: ["id", "username", "email"],
     });
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(HttpStatus.UNAUTHORIZED).json({ message: "User not found" });
     }
     res.json({
       user: { id: user.id, username: user.username, email: user.email },
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
   }
 };
 
@@ -76,7 +85,7 @@ export const getAllUsers = async (req, res) => {
     });
     res.json(users);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
   }
 };
 
@@ -86,10 +95,10 @@ export const getUserById = async (req, res) => {
     const user = await User.findByPk(req.params.id, {
       attributes: ["id", "username", "email", "createdAt", "updatedAt"],
     });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(HttpStatus.NOT_FOUND).json({ message: "User not found" });
     res.json(user);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
   }
 };
 
@@ -98,14 +107,14 @@ export const updateUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(HttpStatus.NOT_FOUND).json({ message: "User not found" });
     if (username) user.username = username;
     if (email) user.email = email;
     if (password) user.password = await bcrypt.hash(password, 10);
     await user.save();
     res.json({ id: user.id, username: user.username, email: user.email });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
   }
 };
 
@@ -113,10 +122,10 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(HttpStatus.NOT_FOUND).json({ message: "User not found" });
     await user.destroy();
     res.json({ message: "User deleted" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
   }
 };
