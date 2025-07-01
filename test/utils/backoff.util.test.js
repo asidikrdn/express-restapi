@@ -1,5 +1,5 @@
 import moment from "moment-timezone";
-import { exponentialBackoff } from "../../src/utils/backoff.util";
+import { exponentialBackoff } from "../../src/utils/backoff.util.js";
 import { expect, jest, test, describe, beforeEach } from "@jest/globals";
 
 // Test suite for exponentialBackoff utility
