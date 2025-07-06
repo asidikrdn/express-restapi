@@ -11,12 +11,13 @@ export const generateCsrfToken = (req, res, next) => {
   if (!req.session) return next(new Error("Session not initialized"));
   if (!req.session.jwt) return next(); // No need for CSRF if not logged in
 
-  if (!req.cookies[CSRF_COOKIE_NAME]) {
+  if (!req.session.lastCsrfJwt || req.session.lastCsrfJwt !== req.session.jwt) {
     const csrfToken = randomBytes(24).toString("hex");
     res.cookie(CSRF_COOKIE_NAME, csrfToken, {
       httpOnly: false,
       sameSite: "strict",
     });
+    req.session.lastCsrfJwt = req.session.jwt;
   }
   next();
 };
