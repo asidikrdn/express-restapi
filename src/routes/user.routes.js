@@ -6,7 +6,8 @@ import {
   getAllUsers,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
+  logout,
 } from "../controllers/user.controller.js";
 import { authenticateJWT } from "../middlewares/auth.js";
 
@@ -23,5 +24,6 @@ protectedUserRouter.get("/", authenticateJWT, getAllUsers);
 protectedUserRouter.get("/:id", authenticateJWT, getUserById);
 protectedUserRouter.put("/:id", authenticateJWT, updateUser);
 protectedUserRouter.delete("/:id", authenticateJWT, deleteUser);
+protectedUserRouter.post("/logout", authenticateJWT, logout);
 
 export { publicUserRouter, protectedUserRouter };

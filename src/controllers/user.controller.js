@@ -148,3 +148,20 @@ export const deleteUser = async (req, res) => {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
   }
 };
+
+// Logout user (destroy session)
+export const logout = async (req, res) => {
+  try {
+    req.session.destroy((err) => {
+      if (err) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: "Failed to destroy session" });
+      }
+      res.clearCookie("connect.sid"); // nama default cookie session
+      res.status(HttpStatus.OK).json({ message: "Logged out successfully" });
+    });
+  } catch (err) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+  }
+};

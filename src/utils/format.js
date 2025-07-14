@@ -30,11 +30,11 @@ const transformKeysAndValues = (data, keyTransformer) => {
 };
 
 // Convert all keys from snake_case to camelCase
-export const transformSnakeToCamel = (obj) =>
+export const transformKeyToCamelCase = (obj) =>
   transformKeysAndValues(obj, _.camelCase);
 
 // Convert all keys from camelCase to snake_case
-export const transformCamelToSnake = (obj) =>
+export const transformKeyToSnakeCase = (obj) =>
   transformKeysAndValues(obj, _.snakeCase);
 
 // Recursively omit specified keys from object
