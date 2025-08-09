@@ -1,3 +1,4 @@
+
 # express-restapi
 
 A boilerplate for developing RESTful APIs using Express.js and Sequelize ORM. This project provides a basic structure and essential features to help you quickly set up and start building your applications with Express.
@@ -8,7 +9,7 @@ A boilerplate for developing RESTful APIs using Express.js and Sequelize ORM. Th
 - Sequelize ORM for SQL database integration (PostgreSQL, MySQL, etc.)
 - Database migrations with Sequelize CLI
 - Utilities for environment, data formatting, and backoff
-- Middleware for CORS, logging (morgan), JSON parsing, session, CSRF, and JWT authentication
+- Middleware for CORS, logging (pino), JSON parsing, and JWT authentication
 - Example User model, migration, controller, and routes (public & protected)
 - Example utility and test (Jest)
 - Ready for Docker
@@ -19,7 +20,7 @@ A boilerplate for developing RESTful APIs using Express.js and Sequelize ORM. Th
 ├── src/
 │   ├── config/         # Database & dotenv configuration
 │   ├── controllers/    # Express controllers
-│   ├── middlewares/    # Express middlewares (auth, csrf, etc)
+│   ├── middlewares/    # Express middlewares (auth, etc)
 │   ├── migrations/     # Sequelize migration files
 │   ├── models/         # Sequelize models
 │   ├── routes/         # Route definitions (public/protected)
@@ -45,10 +46,9 @@ A boilerplate for developing RESTful APIs using Express.js and Sequelize ORM. Th
 
 ## Environment Variables
 
-See `.env.example` for all required variables. Important:\
+See `.env.example` for all required variables. Important:
 
 - `JWT_SECRET` for JWT signing
-- `SESSION_SECRET` for session security (use a long, random string)
 
 ## Database Migration
 
@@ -100,16 +100,24 @@ Run the container:
 docker run -p 5000:5000 --env-file .env express-restapi
 ```
 
+## API Documentation (Swagger UI)
+
+Swagger UI tersedia di endpoint `/api-docs` setelah server dijalankan. Anda dapat mencoba semua endpoint, termasuk endpoint yang membutuhkan JWT (gunakan tombol Authorize di Swagger UI).
+
 ## Route Structure
 
-- **Public routes:** `/api/users/register`, `/api/users/login`
-- **Protected routes:** `/api/users/me`, `/api/users`, `/api/users/:id` (require JWT in session, CSRF for state-changing requests)
+- **Public routes:** `/api/register`, `/api/login`, `/api/refresh`
+- **Protected routes:** `/api/users/me`, `/api/users`, `/api/users/:id`, `/api/users/logout` (require JWT Bearer Token)
 
 ## Security Notes
 
-- Use strong, unique values for `JWT_SECRET` and `SESSION_SECRET` in production.
-- Protected routes require authentication and CSRF protection.
+- Use strong, unique values for `JWT_SECRET` in production.
+- Protected routes require authentication (JWT Bearer Token).
 - Never commit your real `.env` file to version control.
+
+## Versioning
+
+Current version: 2.1.0
 
 ## License
 

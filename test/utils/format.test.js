@@ -2,8 +2,8 @@ import { expect, test, describe } from "@jest/globals";
 import {
   omitDeletedAtProperties,
   omitPasswordProperty,
-  transformCamelToSnake,
-  transformSnakeToCamel,
+  transformKeyToSnakeCase,
+  transformKeyToCamelCase,
 } from "../../src/utils/format.js";
 
 // Utility test for format functions
@@ -43,16 +43,16 @@ describe("Format Utility Tests", () => {
     ];
 
     // Test snake_case to camelCase
-    test("transformSnakeToCamel: single object", () => {
-      const result = transformSnakeToCamel(mockSnake[0]);
+    test("transformKeyToCamelCase: single object", () => {
+      const result = transformKeyToCamelCase(mockSnake[0]);
       // Pastikan semua key sudah camelCase
       Object.keys(result).forEach((key) => {
         expect(/^[a-z]+([A-Z][a-z]*)*$/.test(key)).toBe(true);
       });
     });
 
-    test("transformSnakeToCamel: array of objects", () => {
-      const result = transformSnakeToCamel(mockSnake);
+    test("transformKeyToCamelCase: array of objects", () => {
+      const result = transformKeyToCamelCase(mockSnake);
       result.forEach((obj) => {
         Object.keys(obj).forEach((key) => {
           expect(/^[a-z]+([A-Z][a-z]*)*$/.test(key)).toBe(true);
@@ -61,16 +61,16 @@ describe("Format Utility Tests", () => {
     });
 
     // Test camelCase to snake_case
-    test("transformCamelToSnake: single object", () => {
-      const result = transformCamelToSnake(mockCamel[0]);
+    test("transformKeyToSnakeCase: single object", () => {
+      const result = transformKeyToSnakeCase(mockCamel[0]);
       // Pastikan semua key sudah snake_case
       Object.keys(result).forEach((key) => {
         expect(/^[a-z]+(_[a-z]+)*$/.test(key)).toBe(true);
       });
     });
 
-    test("transformCamelToSnake: array of objects", () => {
-      const result = transformCamelToSnake(mockCamel);
+    test("transformKeyToSnakeCase: array of objects", () => {
+      const result = transformKeyToSnakeCase(mockCamel);
       result.forEach((obj) => {
         Object.keys(obj).forEach((key) => {
           expect(/^[a-z]+(_[a-z]+)*$/.test(key)).toBe(true);
