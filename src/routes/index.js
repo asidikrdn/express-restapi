@@ -5,7 +5,7 @@ const publicRouter = express.Router();
 const protectedRouter = express.Router();
 
 // Public routes
-publicRouter.use("/users", publicUserRouter);
+publicRouter.use("/", publicUserRouter);
 
 // Protected routes
 protectedRouter.use("/users", protectedUserRouter);

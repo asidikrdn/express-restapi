@@ -1,7 +1,11 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import process from "process";
 import db from "../models/index.js";
-import { generateToken } from "../utils/jwt.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyToken,
+} from "../utils/jwt.js";
 import HttpStatus from "http-status";
 
 const { User } = db;
@@ -31,7 +35,7 @@ export const register = async (req, res) => {
   }
 };
 
-// Login user (store JWT in session)
+// Login user (return access token in body, set refresh token in HttpOnly cookie)
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -52,11 +56,60 @@ export const login = async (req, res) => {
         .status(HttpStatus.UNAUTHORIZED)
         .json({ message: "Invalid credentials" });
     }
-    const token = generateToken(user);
-    req.session.jwt = token; // Simpan token di session
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    // Store refresh token in DB for rotation/blacklist
+    user.refreshToken = refreshToken;
+    await user.save();
+    res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
     res.json({
+      accessToken,
       user: { id: user.id, username: user.username, email: user.email },
     });
+  } catch (err) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+  }
+};
+
+// Refresh access token using refresh token from cookie (with rotation/blacklist)
+export const refresh = async (req, res) => {
+  try {
+    const token = req.cookies["refresh_token"];
+    if (!token) {
+      return res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ message: "No refresh token" });
+    }
+    const payload = verifyToken(token, "refresh");
+    if (!payload) {
+      return res
+        .status(HttpStatus.FORBIDDEN)
+        .json({ message: "Invalid refresh token" });
+    }
+    // Check if user exists and token matches stored one (rotation/blacklist)
+    const user = await User.findByPk(payload.id);
+    if (!user || user.refreshToken !== token) {
+      return res
+        .status(HttpStatus.FORBIDDEN)
+        .json({ message: "Refresh token revoked" });
+    }
+    // Generate new tokens (rotation)
+    const accessToken = generateAccessToken(user);
+    const newRefreshToken = generateRefreshToken(user);
+    user.refreshToken = newRefreshToken;
+    await user.save();
+    res.cookie("refresh_token", newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    res.json({ accessToken });
   } catch (err) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
   }
@@ -149,18 +202,27 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// Logout user (destroy session)
+// Logout user (clear refresh token cookie and DB)
 export const logout = async (req, res) => {
   try {
-    req.session.destroy((err) => {
-      if (err) {
-        return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json({ message: "Failed to destroy session" });
+    const token = req.cookies["refresh_token"];
+    if (token) {
+      // Remove refresh token from DB if possible
+      const payload = verifyToken(token, "refresh");
+      if (payload) {
+        const user = await User.findByPk(payload.id);
+        if (user) {
+          user.refreshToken = null;
+          await user.save();
+        }
       }
-      res.clearCookie("connect.sid"); // nama default cookie session
-      res.status(HttpStatus.OK).json({ message: "Logged out successfully" });
+    }
+    res.clearCookie("refresh_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
     });
+    res.status(HttpStatus.OK).json({ message: "Logged out successfully" });
   } catch (err) {
     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
   }

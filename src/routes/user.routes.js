@@ -8,6 +8,7 @@ import {
   updateUser,
   deleteUser,
   logout,
+  refresh,
 } from "../controllers/user.controller.js";
 import { authenticateJWT } from "../middlewares/auth.js";
 
@@ -17,6 +18,7 @@ const protectedUserRouter = express.Router();
 // Public routes
 publicUserRouter.post("/register", register);
 publicUserRouter.post("/login", login);
+publicUserRouter.post("/refresh", refresh);
 
 // Protected routes (require JWT)
 protectedUserRouter.get("/me", authenticateJWT, checkAuth);

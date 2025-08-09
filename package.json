@@ -1,6 +1,6 @@
 {
   "name": "express-restapi",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A boilerplate for developing RESTful APIs using Express.js. This project provides a basic structure and essential features to help you quickly set up and start building your applications with Express.",
   "main": "src/server.js",
   "type": "module",
@@ -43,15 +43,18 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "express-session": "^1.18.1",
     "http-status": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.46",
-    "morgan": "^1.10.0",
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.5"
+    "pino": "^9.8.0",
+    "pino-http": "^10.5.0",
+    "pino-pretty": "^13.1.1",
+    "sequelize": "^6.37.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
